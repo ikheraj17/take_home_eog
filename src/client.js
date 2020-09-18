@@ -8,6 +8,7 @@ const app = express();
 const api = require('./main-service');
 app.use(cors());
 
+app.use('/api', api);
 
 app.listen(port, host, async err => {
     if(err) return console.error("there was an error connecting to the server: ", err);
