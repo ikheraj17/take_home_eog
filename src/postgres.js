@@ -5,7 +5,7 @@ var client = new pg.Client(config.config);
 
 client.connect()
 .then(() => {
-  return client.query('CREATE TABLE IF NOT EXISTS people (Title text, First text, Last text, Date date, Age integer, Gender text)')
+  return client.query('CREATE TABLE IF NOT EXISTS people (id serial PRIMARY KEY, Title text, First text, Last text, Date date, Age integer, Gender text)')
   .then(res => {
     console.log('table created', res);
     client.end();

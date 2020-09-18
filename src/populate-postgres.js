@@ -17,7 +17,7 @@
  const pg = require('pg');
  const config = require('./config');
 
- const stream = fs.createReadStream('./data-dump/people.csv');
+ const stream = fs.createReadStream('./data-dump/test.csv');
  const csvData = [];
  const client = new pg.Client(config.config);
 
