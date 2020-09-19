@@ -8,7 +8,7 @@ require("dotenv/config");
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getFullNames } = require('./postgres');
+const { getFullNames, getAllUsers } = require('./postgres');
 const router = express.Router();
 router.use(bodyParser.json());
 
@@ -28,10 +28,20 @@ router.use((req, res, next) => {
  * purpose: Return an array of users
  * bonus: Support pagination
  */
+router.get('/users', (req, res) => {
+    let page = req.body.page;
+    getAllUsers(page, results => {
+        res.send(results.rows);
+    })
+})
+/**
+ * method: GET
+ * route: /fullnames
+ * purpose: Return an array of the first and last name for each user
+ */
 router.get('/fullnames', (req, res) => {
     const names = [];
     getFullNames(results => {
-        console.log(results.rows);
         results.rows.forEach(person => {
             let fullName = `${person.first} ${person.last}`;
             names.push(fullName);
@@ -39,12 +49,6 @@ router.get('/fullnames', (req, res) => {
         res.send(names);
     })
 });
-/**
- * method: GET
- * route: /fullnames
- * purpose: Return an array of the first and last name for each user
- */
-
 /**
  * method: POST
  * route: /users

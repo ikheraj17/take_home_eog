@@ -16,10 +16,33 @@ client.connect()
   })
 })
 .catch(err => {
-  if(err) console.error("error connecting to db: ",err)
+  console.error("error connecting to db: ",err)
 })
 
-const getFullNames = (callback) => {
+const getAllUsers = (page,callback) => {
+  if(page === 1) {
+    let query = `SELECT * FROM people where id BETWEEN ${page} AND ${page + 9}`;
+    client.query(query)
+      .then(res => {
+        callback(res);
+      })
+      .catch(err => {
+        callback('Could not retrieve users');
+      })
+  } else {
+    let offset = page * 10 - 10;
+    query = `SELECT * FROM people where id BETWEEN ${offset + 1} AND ${offset + 10}`;
+    client.query(query)
+      .then(res => {
+        callback(res);
+      })
+      .catch(err => {
+        callback('could not retrieve users');
+      })
+  }
+}
+
+const getFullNames = callback => {
 
   const query = `SELECT First, Last FROM people`;
   client.query(query)
@@ -33,7 +56,7 @@ const getFullNames = (callback) => {
 
 // getFullNames();
 
-module.exports = {getFullNames}
+module.exports = {getFullNames, getAllUsers};
 
 /**
  * You will need to setup a connection to the postgres database
