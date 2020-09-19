@@ -28,12 +28,12 @@ router.use((req, res, next) => {
  * purpose: Return an array of users
  * bonus: Support pagination
  */
-router.get('/users', (req, res) => {
+router.post('/users', (req, res) => {
     let page = req.body.page;
     getAllUsers(page, results => {
         res.send(results.rows);
     })
-})
+});
 /**
  * method: GET
  * route: /fullnames
