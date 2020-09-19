@@ -7,8 +7,8 @@ client.connect()
 .then(() => {
   return client.query('CREATE TABLE IF NOT EXISTS people (id serial PRIMARY KEY, Title text, First text, Last text, Date date, Age integer, Gender text)')
   .then(res => {
-    console.log('table created', res);
-    client.end();
+    console.log('table discovered or created');
+    // client.end();
   })
   .catch(err => {
     console.error( 'there was an error creating the table: ', err);
@@ -19,6 +19,21 @@ client.connect()
   if(err) console.error("error connecting to db: ",err)
 })
 
+const getFullNames = (callback) => {
+
+  const query = `SELECT First, Last FROM people`;
+  client.query(query)
+    .then(res => {
+      callback(res);
+    })
+    .catch(err => {
+       return console.error("could not fetch full names: ",err);
+    })
+};
+
+// getFullNames();
+
+module.exports = {getFullNames}
 
 /**
  * You will need to setup a connection to the postgres database

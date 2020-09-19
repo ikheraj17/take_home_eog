@@ -6,7 +6,15 @@ require("dotenv/config");
  *
  * Make sure to handle any errors that could arise as well!
  */
+const express = require('express');
+const bodyParser = require('body-parser');
+const { getFullNames } = require('./postgres');
+const router = express.Router();
+router.use(bodyParser.json());
 
+router.use((req, res, next) => {
+    next();
+});
 /**
  * method: GET
  * route: /migrate-users
@@ -20,7 +28,17 @@ require("dotenv/config");
  * purpose: Return an array of users
  * bonus: Support pagination
  */
-
+router.get('/fullnames', (req, res) => {
+    const names = [];
+    getFullNames(results => {
+        console.log(results.rows);
+        results.rows.forEach(person => {
+            let fullName = `${person.first} ${person.last}`;
+            names.push(fullName);
+        })
+        res.send(names);
+    })
+});
 /**
  * method: GET
  * route: /fullnames
@@ -44,3 +62,5 @@ require("dotenv/config");
  * route: /users
  * purpose: Remove a given user
  */
+
+ module.exports = router;
