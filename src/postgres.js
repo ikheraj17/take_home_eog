@@ -37,7 +37,7 @@ const getAllUsers = (page,callback) => {
         callback(res);
       })
       .catch(err => {
-        callback('could not retrieve users');
+        callback('could not retrieve users: ', err);
       })
   }
 }
@@ -50,13 +50,24 @@ const getFullNames = callback => {
       callback(res);
     })
     .catch(err => {
-       return console.error("could not fetch full names: ",err);
+       callback("could not fetch full names: ",err);
     })
+};
+
+const addUser = (user, callback) => {
+  const query = "INSERT INTO people (Title, First, Last, Date, Age, Gender) VALUES ($1, $2, $3, $4, $5, $6)";
+  client.query(query, user)
+    .then(res => {
+      callback(res);
+    })
+    .catch(err => {
+      callback(err);
+    });
 };
 
 // getFullNames();
 
-module.exports = {getFullNames, getAllUsers};
+module.exports = {getFullNames, getAllUsers, addUser};
 
 /**
  * You will need to setup a connection to the postgres database

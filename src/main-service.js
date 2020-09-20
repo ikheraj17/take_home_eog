@@ -8,7 +8,7 @@ require("dotenv/config");
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getFullNames, getAllUsers } = require('./postgres');
+const { getFullNames, getAllUsers, addUser } = require('./postgres');
 const router = express.Router();
 router.use(bodyParser.json());
 
@@ -30,9 +30,13 @@ router.use((req, res, next) => {
  */
 router.post('/users', (req, res) => {
     let page = req.body.page;
-    getAllUsers(page, results => {
-        res.send(results.rows);
-    })
+    if(page && typeof page === 'number') {
+        getAllUsers(page, results => {
+            res.send(results.rows);
+        })
+    } else {
+        res.send('Page selection invalid');
+    }
 });
 /**
  * method: GET
@@ -42,11 +46,15 @@ router.post('/users', (req, res) => {
 router.get('/fullnames', (req, res) => {
     const names = [];
     getFullNames(results => {
-        results.rows.forEach(person => {
-            let fullName = `${person.first} ${person.last}`;
-            names.push(fullName);
-        })
-        res.send(names);
+        if(results.rows.length) {
+            results.rows.forEach(person => {
+                let fullName = `${person.first} ${person.last}`;
+                names.push(fullName);
+            })
+            res.send(names);   
+        } else {
+            res.send('There were no names to retrieve');
+        } 
     })
 });
 /**
@@ -54,7 +62,15 @@ router.get('/fullnames', (req, res) => {
  * route: /users
  * purpose: Add a new user to the database
  */
-
+router.post('/adduser', (req, res) => {
+    addUser(req.body.values, results => {
+        if(results.rowCount) {
+            res.send('User added');
+        } else {
+            res.send("There was an error adding this user");
+        }
+    })
+})
 /**
  * method: PATCH
  * route: /users
