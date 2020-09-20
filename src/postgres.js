@@ -7,8 +7,7 @@ client.connect()
 .then(() => {
   return client.query('CREATE TABLE IF NOT EXISTS people (id serial PRIMARY KEY, Title text, First text, Last text, Date date, Age integer, Gender text)')
   .then(res => {
-    console.log('table created', res);
-    client.end();
+    console.log('people table discovered or created in db instance');
   })
   .catch(err => {
     console.error( 'there was an error creating the table: ', err);
@@ -16,9 +15,90 @@ client.connect()
   })
 })
 .catch(err => {
-  if(err) console.error("error connecting to db: ",err)
-})
+  console.error("error connecting to db: ",err)
+});
 
+const getAllUsers = (page,callback) => {
+  if(page === 1) {
+    let query = `SELECT * FROM people where id BETWEEN ${page} AND ${page + 9}`;
+    client.query(query)
+      .then(res => {
+        callback(res);
+      })
+      .catch(err => {
+        callback('Could not retrieve users');
+      });
+  } else {
+    let offset = page * 10 - 10;
+    query = `SELECT * FROM people where id BETWEEN ${offset + 1} AND ${offset + 10}`;
+    client.query(query)
+      .then(res => {
+        callback(res);
+      })
+      .catch(err => {
+        callback('could not retrieve users: ', err);
+      });
+  }
+};
+
+const getFullNames = callback => {
+
+  const query = `SELECT First, Last FROM people`;
+  client.query(query)
+    .then(res => {
+      callback(res);
+    })
+    .catch(err => {
+       callback("could not fetch full names: ",err);
+    });
+};
+
+const addUser = (user, callback) => {
+  const query = "INSERT INTO people (Title, First, Last, Date, Age, Gender) VALUES ($1, $2, $3, $4, $5, $6)";
+  client.query(query, user)
+    .then(res => {
+      callback(res);
+    })
+    .catch(err => {
+      callback(err);
+    });
+};
+
+const deleteUser = (id, callback) => {
+  const query = `DELETE FROM people WHERE id=${id}`;
+  client.query(query)
+    .then(res => {
+      callback(res);
+    }).catch(err => {
+      callback(err);
+    });
+}
+
+const updateUser = (id, updated, callback) => {
+  updated.forEach(field => {
+    const query = `UPDATE people SET ${field[0]} = '${field[1]}' where id = ${id}`;
+    client.query(query)
+      .then(res => {
+        callback(res);
+      })
+      .catch(err => {
+        callback(err);
+      });
+  })
+}
+
+const selectUser = (id, first, callback) => {
+  const query = `SELECT * FROM people WHERE id = ${id} AND First = '${first}'`;
+  client.query(query)
+  .then(res => {
+    callback(res.rows);
+  })
+  .catch(err => {
+    callback(err);
+  })
+}
+
+module.exports = {getFullNames, getAllUsers, addUser, deleteUser, updateUser, selectUser};
 
 /**
  * You will need to setup a connection to the postgres database

@@ -1,4 +1,19 @@
 require("dotenv/config");
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const port =  process.env.PORT || 3000;
+const host = process.env.HOST || 'localhost';
+const app = express();
+const api = require('./main-service');
+app.use(cors());
+
+app.use('/api', api);
+
+app.listen(port, host, async err => {
+    if(err) return console.error("there was an error connecting to the server: ", err);
+    console.log(`App listening at http://${host}:${port}/`);
+});
 /**
  * Example Client Service
  *
@@ -10,3 +25,4 @@ require("dotenv/config");
  * main service. This can be either an express server or another Node.js
  * framework if you have experience with others.
  */
+

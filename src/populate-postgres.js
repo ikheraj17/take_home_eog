@@ -17,7 +17,7 @@
  const pg = require('pg');
  const config = require('./config');
 
- const stream = fs.createReadStream('./data-dump/test.csv');
+ const stream = fs.createReadStream('./data-dump/people.csv');
  const csvData = [];
  const client = new pg.Client(config.config);
 
@@ -27,56 +27,7 @@
      csvData.push(data);
  })
  .on("end" , () => {
-     csvData.shift();
-    //  console.log(csvData);
-     
-    //  client.connect(err => {
-    //      if(err) {
-    //          return console.error('could not connect to postgres', err);
-    //      }
-    //      try {
-    //         const query = "INSERT INTO people (Title, First, Last, Date, Age, Gender) VALUES ($1, $2, $3, $4, $5, $6)";
-    //         csvData.forEach(entry => {
-    //             entry[3] = entry[3].slice(0, 10);
-    //               client.query(query, entry, (err, res) => {
-    //                 if(err) {
-    //                     console.log(err.stack);
-    //                 }
-    //             });
-    //         })
-    //      }
-    //      catch (e) {
-    //          console.log('There was an error importing data');
-    //      }
-    //      finally {
-    //        console.log('data import completed');
-    //     }
-    //  });
-    // const asyncForEach = async (array, callback) => {
-    //     for (let index = 0; index < array.length; index++) {
-    //       await callback(array[index], index, array)
-    //     }
-    //   };
-
-    // const seed = async () => {
-    //     await asyncForEach(csvData, async (entry) => {
-    //         const query = "INSERT INTO people (Title, First, Last, Date, Age, Gender) VALUES ($1, $2, $3, $4, $5, $6)";
-    //         entry[3] = entry[3].slice(0,10);
-    //         client.query(query, entry)
-    //         .then((res) => {
-    //             if(entry === csvData[csvData.length -1]) {
-    //                 console.log('final row inserted');
-    //             } else {
-    //                 console.log('row inserted');
-    //             }
-                
-    //         })
-    //         .catch(err => {
-    //             console.log('error inseting rows: ', err);
-    //         })  
-    //     })
-    // }
-
+    csvData.shift();
     client.connect()
     .then(() => {
         const query = "INSERT INTO people (Title, First, Last, Date, Age, Gender) VALUES ($1, $2, $3, $4, $5, $6)";
