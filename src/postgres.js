@@ -7,8 +7,7 @@ client.connect()
 .then(() => {
   return client.query('CREATE TABLE IF NOT EXISTS people (id serial PRIMARY KEY, Title text, First text, Last text, Date date, Age integer, Gender text)')
   .then(res => {
-    console.log('table discovered or created');
-    // client.end();
+    console.log('people table discovered or created in db instance');
   })
   .catch(err => {
     console.error( 'there was an error creating the table: ', err);

@@ -12,7 +12,7 @@ app.use('/api', api);
 
 app.listen(port, host, async err => {
     if(err) return console.error("there was an error connecting to the server: ", err);
-    console.log(`App listening on host "${host}" and port ${port}`);
+    console.log(`App listening at http://${host}:${port}/`);
 });
 /**
  * Example Client Service
