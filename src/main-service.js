@@ -8,6 +8,7 @@ require("dotenv/config");
  */
 const express = require('express');
 const bodyParser = require('body-parser');
+const axios = require('axios');
 const { getFullNames, getAllUsers, addUser, deleteUser, updateUser, selectUser } = require('./postgres');
 const router = express.Router();
 router.use(bodyParser.json());
@@ -83,7 +84,7 @@ router.patch('/updateuser', (req, res) => {
             res.send('User to update not found');
         }
     })
-})
+});
 /**
  * method: DELETE
  * route: /users
@@ -98,6 +99,19 @@ router.post('/deleteuser', (req, res) => {
             res.send('there was an error deleting this user');
         }
     });
+});
+
+router.get('/dadjoke', (req, res) => {
+    axios.get('https://icanhazdadjoke.com/',{
+        headers:{
+            'accept': 'application/json'
+    }})
+      .then(response => {
+          res.send(response.data.joke);
+      })
+      .catch(err => {
+          res.send('error fetching dad joke');
+      })
 });
 
  module.exports = router;
