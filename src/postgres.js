@@ -65,9 +65,17 @@ const addUser = (user, callback) => {
     });
 };
 
-// getFullNames();
+const deleteUser = (id, callback) => {
+  const query = `DELETE FROM people WHERE id=${id}`;
+  client.query(query)
+    .then(res => {
+      callback(res);
+    }).catch(err => {
+      callback(err);
+    })
+}
 
-module.exports = {getFullNames, getAllUsers, addUser};
+module.exports = {getFullNames, getAllUsers, addUser, deleteUser};
 
 /**
  * You will need to setup a connection to the postgres database

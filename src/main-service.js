@@ -8,13 +8,10 @@ require("dotenv/config");
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getFullNames, getAllUsers, addUser } = require('./postgres');
+const { getFullNames, getAllUsers, addUser, deleteUser } = require('./postgres');
 const router = express.Router();
 router.use(bodyParser.json());
 
-router.use((req, res, next) => {
-    next();
-});
 /**
  * method: GET
  * route: /migrate-users
@@ -55,7 +52,7 @@ router.get('/fullnames', (req, res) => {
         } else {
             res.send('There were no names to retrieve');
         } 
-    })
+    });
 });
 /**
  * method: POST
@@ -69,8 +66,8 @@ router.post('/adduser', (req, res) => {
         } else {
             res.send("There was an error adding this user");
         }
-    })
-})
+    });
+});
 /**
  * method: PATCH
  * route: /users
@@ -82,5 +79,15 @@ router.post('/adduser', (req, res) => {
  * route: /users
  * purpose: Remove a given user
  */
+router.post('/deleteuser', (req, res) => {
+    deleteUser(req.body.id, results => {
+        console.log(results);
+        if(results.rowCount) {
+            res.send('user deleted');
+        } else {
+            res.send('there was an error deleting this user');
+        }
+    });
+});
 
  module.exports = router;
