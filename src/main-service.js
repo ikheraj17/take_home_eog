@@ -8,7 +8,7 @@ require("dotenv/config");
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getFullNames, getAllUsers, addUser, deleteUser } = require('./postgres');
+const { getFullNames, getAllUsers, addUser, deleteUser, updateUser, selectUser } = require('./postgres');
 const router = express.Router();
 router.use(bodyParser.json());
 
@@ -73,7 +73,17 @@ router.post('/adduser', (req, res) => {
  * route: /users
  * purpose: Update a user record
  */
-
+router.patch('/updateuser', (req, res) => {
+    selectUser(req.body.id, req.body.toUpdate[0], results => {
+        if(results.length) {
+            updateUser(req.body.id, req.body.update, resultss => {
+                res.send('user information updated');
+            })
+        } else {
+            res.send('User to update not found');
+        }
+    })
+})
 /**
  * method: DELETE
  * route: /users
